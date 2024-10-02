@@ -18,12 +18,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      - name: Create virtual environment
         run: |
+          python -m venv venv  # Create a virtual environment
+          source venv/bin/activate  # Activate the virtual environment
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # This installs pytest and any other dependencies.
+          pip install -r requirements.txt  # Install dependencies
 
       - name: Run tests
         run: |
-          python -m pytest  # This will now work since pytest is installed.
+          source venv/bin/activate  # Activate the virtual environment
+          python -m pytest  # Run the tests.
 
