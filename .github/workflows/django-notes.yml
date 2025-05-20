@@ -37,6 +37,8 @@ jobs:
       
       - name: Build Docker image
         run: sudo docker build --no-cache -t django-notes-image .
+      - name: Run Docker container
+        run:  sudo docker run -d -p 8000:8000 --name django-notes-container django-notes-image
 
 
       - name: Check if the container is running, then stop and remove it
@@ -50,6 +52,4 @@ jobs:
           fi
 
 
-      - name: Run Docker container
-        run:  docker run -d -p 8000:8000 --name django-notes-container django-notes-image
-
+     
