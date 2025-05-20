@@ -20,7 +20,7 @@ jobs:
       - name: Sync latest code on self-hosted runner
         run: |
           echo "Pulling the latest code..."
-          cd /home/ubuntu/actions-runner/django-notes-app
+          cd /home/ubuntu/actions-runner/django-notes/django-notes-app/django-notes-app
           git pull origin main
 
 
@@ -29,16 +29,6 @@ jobs:
         with:
           python-version: '3.10'
 
-
-
-
-
-
-      
-      - name: Build Docker image
-        run: sudo docker build --no-cache -t django-notes-image  .
-
-
       - name: Check if the container is running, then stop and remove it
         run: |
           if docker ps -q --filter "name=django-notes-container"; then
@@ -46,9 +36,16 @@ jobs:
             sudo docker stop django-notes-container || true
             sudo docker rm django-notes-container || true
           else
-            echo "Container  django-notes-container is not running. Skipping stop and remove."
+            echo "Container django-notes-container is not running. Skipping stop and remove."
           fi
+
+      
+      - name: Build Docker image
+        run: sudo docker build --no-cache -t django-notes-image  .
 
 
       - name: Run Docker container
-        run: sudo docker run -d -p 8000:8000 --name django-notes-container django-notes-image
+        run: sudo docker run -d -p 8000:8000 --name=django-notes-container django-notes-image
+
+      - name: Run Docker container
+        run: docker system prune -af
