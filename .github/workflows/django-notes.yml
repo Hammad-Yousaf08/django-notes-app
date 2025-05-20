@@ -43,8 +43,8 @@ jobs:
         run: |
           if docker ps -q --filter "name=django-notes-container"; then
             echo "Stopping and removing container django-notes-container.."
-            docker stop django-notes-container || true
-            docker rm django-notes-container || true
+            sudo docker stop django-notes-container || true
+            sudo docker rm django-notes-container || true
           else
             echo "Container django-notes-container is not running. Skipping stop and remove."
           fi
