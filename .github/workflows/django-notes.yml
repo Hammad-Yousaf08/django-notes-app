@@ -20,7 +20,7 @@ jobs:
       - name: Sync latest code on self-hosted runner
         run: |
           echo "Pulling the latest code..."
-          cd //home/ubuntu/actions-runner/django-notes-app
+          cd /home/ubuntu/actions-runner/django-notes-app
           git pull origin main
 
 
