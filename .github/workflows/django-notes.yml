@@ -51,5 +51,5 @@ jobs:
 
 
       - name: Run Docker container
-        run:  sudo docker run -d -p 8000:8000 --name django-notes-container django-notes-image
+        run:  docker run -d -p 8000:8000 --name django-notes-container django-notes-image
 
