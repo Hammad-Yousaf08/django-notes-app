@@ -1,4 +1,4 @@
-name: django-notes 
+name: PP-Python-App
 
 
 on:
@@ -36,20 +36,19 @@ jobs:
 
       
       - name: Build Docker image
-        run: sudo docker build --no-cache -t django-notes-image .
-      
+        run: sudo docker build --no-cache -t django-notes-image  .
+
+
       - name: Check if the container is running, then stop and remove it
         run: |
-          if docker ps -q --filter "name=django-notes-container"; then
-            echo "Stopping and removing container django-notes-container.."
-            sudo docker stop django-notes-container || true
-            sudo docker rm django-notes-container || true
+          if docker ps -q --filter "name= django-notes-container"; then
+            echo "Stopping and removing container  django-notes-container..."
+            docker stop  django-notes-container || true
+            docker rm  django-notes-container || true
           else
-            echo "Container django-notes-container is not running. Skipping stop and remove."
+            echo "Container  django-notes-container is not running. Skipping stop and remove."
           fi
+
+
       - name: Run Docker container
-        run:  sudo docker run -d -p 8000:8000 --name django-notes-container django-notes-image
-
-
-
-     
+        run: docker run -d -p 8000:8000 --name  django-notes-container django-notes-image
