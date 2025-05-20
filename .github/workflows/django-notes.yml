@@ -47,4 +47,4 @@ jobs:
         run: sudo docker run -d -p 8000:8000 --name=django-notes-container django-notes-image
 
       - name: Run Docker container
-        run: docker system prune -af
+        run: sudo docker system prune -af
