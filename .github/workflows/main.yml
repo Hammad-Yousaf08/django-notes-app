@@ -16,7 +16,7 @@ jobs:
       - name: Sync latest code on self-hosted runner
         run: |
           echo "Pulling the latest code..."
-          cd /home/octaloop/actions-runner/django-notes-app
+          cd /home/octaloop/actions-runner/django-notes-app-folder/django-notes-app/django-notes-app
           git pull origin main
 
       - name: Set up Python
