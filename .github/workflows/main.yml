@@ -1,0 +1,44 @@
+name: django-notes-app
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Sync latest code on self-hosted runner
+        run: |
+          echo "Pulling the latest code..."
+          cd /home/octaloop/actions-runner/django-notes-app
+          git pull origin main
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Build Docker image
+        run: docker build --no-cache -t django-notes-app-image .
+
+      - name: Check if the container is running, then stop and remove it
+        run: |
+          if docker ps -q --filter "name=django-notes-app-container"; then
+            echo "Stopping and removing container django-notes-app-container..."
+            docker stop django-notes-app-container || true
+            docker rm django-notes-app-container || true
+          else
+            echo "Container django-notes-app-container is not running. Skipping stop and remove."
+          fi
+
+      - name: Run Docker container
+        run: docker run -d -p 8000:8000 --name django-notes-app-container django-notes-app-image
+
+      - name: Clean up Docker system
+        run: sudo docker system prune -af
