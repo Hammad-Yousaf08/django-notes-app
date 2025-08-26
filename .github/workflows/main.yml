@@ -45,13 +45,9 @@ jobs:
 
       # SonarQube scan
       - name: SonarQube Scan
-        run: |
-          echo "Running SonarQube analysis..."
-          SONARQUBE_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sonar)
-          echo "SonarQube IP Address: $SONARQUBE_IP"
 
           docker run --rm --network host \
-            -e SONAR_HOST_URL="http://$SONARQUBE_IP:9000" \
+            -e SONAR_HOST_URL="http://172.17.0.2:9000" \
             -e SONAR_TOKEN=$SONAR_TOKEN \
             -e SONAR_WP_TIMEOUT="600" \
             -v $(pwd):/usr/src \
