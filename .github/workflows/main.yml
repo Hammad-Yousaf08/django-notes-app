@@ -1,6 +1,4 @@
 name: Deploy FastAPI App via Self-Hosted Runner
-
-
 on:
   push:
     branches:
