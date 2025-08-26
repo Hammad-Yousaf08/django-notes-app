@@ -1,4 +1,4 @@
-name: django-notes-app
+name: Deploy FastAPI App via Self-Hosted Runner
 
 on:
   push:
@@ -6,50 +6,69 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: self-hosted
-
+  deploy:
+    runs-on: self-hosted  # Self-hosted GitHub runner
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Sync latest code on self-hosted runner
+      - name: Build Docker Image
         run: |
-          echo "Pulling the latest code..."
-          cd /home/octaloop/actions-runner/runner-django-fol/django-notes-app/django-notes-app
-          git pull origin main
+          echo "Building latest Docker image..."
+          sudo docker build -t django-notes-app-image .
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Build Docker image
-        run: docker build --no-cache -t django-notes-app-image .
-
-      - name: Check if the container is running, then stop and remove it
+      - name: Stop & Remove Existing Container
         run: |
-          if docker ps -q --filter "name=django-notes-app-container"; then
-            echo "Stopping and removing container django-notes-app-container..."
-            docker stop django-notes-app-container || true
-            docker rm django-notes-app-container || true
-          else
-            echo "Container django-notes-app-container is not running. Skipping stop and remove."
+          CONTAINER_ID=$(sudo docker ps -aq --filter "name=django-notes-app-container")
+          if [ ! -z "$CONTAINER_ID" ]; then
+            sudo docker stop django-notes-app-container
+            sudo docker rm django-notes-app-container
           fi
 
-      - name: Run Docker container
-        run: docker run -d -p 8000:8000 --name django-notes-app-container django-notes-app-image
+      - name: Run New Container from Latest Image
+        run: |
+          echo "Running container from latest image..."
+          sudo docker run -d --name django-notes-app-container -p 8000:8000 django-notes-app-image
 
-      # SonarQube Integration
+      - name: Cleanup Unused Docker Images
+        run: |
+          echo "Cleaning up old Docker images..."
+          sudo docker image prune -af
+
+  sonarQube:
+    runs-on: self-hosted
+    needs: deploy
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          echo "Running SonarQube analysis..."
+          sudo docker run --rm \
+            -e SONAR_HOST_URL="http://localhost:9000" \
+            -e SONAR_LOGIN=$SONAR_TOKEN \
+            -v $(pwd):/usr/src \
+            sonarsource/sonar-scanner-cli
 
-      # If you wish to fail your job when the Quality Gate is red, uncomment the
-      # following lines. This would typically be used to fail a deployment.
-      # - uses: SonarSource/sonarqube-quality-gate-action@v1
-      #   timeout-minutes: 5
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Generate PDF Report
+        run: |
+          echo "Generating PDF report..."
+          curl -u $SONAR_LOGIN:$SONAR_TOKEN \
+          "http://localhost:9000/api/qualitygates/project_status?projectKey=free" \
+          -o report.json
+          
+          # Convert JSON to PDF (use a tool or custom script)
+          python3 generate_pdf_report.py report.json
+
+  nginx:
+    runs-on: self-hosted
+    needs: deploy
+    
+    steps:
+      - name: Test and Reload Nginx
+        run: |
+          echo "Testing nginx configuration..."
+          sudo nginx -t && sudo systemctl restart nginx
