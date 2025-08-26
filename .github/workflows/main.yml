@@ -45,7 +45,9 @@ jobs:
 
       # SonarQube scan
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-          SONAR_HOST_URL: http://172.17.0.2:9000
+        run: |
+          docker run --rm --network container:sonarqube_container_name \
+            -e SONAR_HOST_URL="http://sonarqube:9000" \
+            -e SONAR_TOKEN=$SONAR_TOKEN \
+            -v $(pwd):/usr/src \
+            sonarsource/sonar-scanner-cli
