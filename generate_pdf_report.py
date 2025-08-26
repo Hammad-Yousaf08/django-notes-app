@@ -18,12 +18,25 @@ c.drawString(100, height - 50, "SonarQube Report")
 # Add the report data
 c.setFont("Helvetica", 10)
 
-# Adjust this part depending on how your JSON looks
+# Starting y-position
 y_position = height - 100
+
+# Define a function to handle page breaks
+def add_text_with_page_break(text, y_position):
+    global c, width, height
+    lines = text.split("\n")
+    for line in lines:
+        if y_position < 50:  # If we're too close to the bottom, start a new page
+            c.showPage()
+            c.setFont("Helvetica", 10)
+            y_position = height - 50  # Reset y-position to top
+        c.drawString(100, y_position, line)
+        y_position -= 12  # Move down the page
+
+# Adjust this part depending on how your JSON looks
 for key, value in data.items():
     text = f"{key}: {value}"
-    c.drawString(100, y_position, text)
-    y_position -= 20
+    add_text_with_page_break(text, y_position)
 
 # Save the PDF
 c.save()
