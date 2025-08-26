@@ -48,7 +48,7 @@ jobs:
         run: |
          echo "Running SonarQube analysis..."
          docker run --rm --network host \
-         -e SONAR_HOST_URL="http://192.168.11.154:9000" \
+         -e SONAR_HOST_URL="http://localhost:9000" \
          -e SONAR_TOKEN=$SONAR_TOKEN \
          -v $(pwd):/usr/src \
          sonarsource/sonar-scanner-cli
