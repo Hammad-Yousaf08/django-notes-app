@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted  # Self-hosted GitHub runne
+    runs-on: self-hosted  # Self-hosted GitHub runn
 
     steps:
       - name: Checkout Code
