@@ -48,16 +48,15 @@ jobs:
           echo "Running SonarQube analysis..."
           docker run --rm --network host \
             -e SONAR_HOST_URL="http://localhost:9000" \
-            -e SONAR_LOGIN=$SONAR_TOKEN \
+            -e SONAR_TOKEN=$SONAR_TOKEN \
             -v $(pwd):/usr/src \
             sonarsource/sonar-scanner-cli
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Correctly pass the token as an environment variable
+   # Correctly pass the token as an environment variable
 
       - name: Generate PDF Report
         run: |
           echo "Generating PDF report..."
-          curl -u $SONAR_LOGIN:$SONAR_TOKEN \
+          curl -u $SONAR_TOKEN:$SONAR_TOKEN \
             "http://localhost:9000/api/qualitygates/project_status?projectKey=free" \
             -o report.json
           
