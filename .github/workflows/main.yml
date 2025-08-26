@@ -52,7 +52,8 @@ jobs:
           -e SONAR_LOGIN=$SONAR_TOKEN \
           -v $(pwd):/usr/src \
           sonarsource/sonar-scanner-cli
-
+          env:
+           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  #
       - name: Generate PDF Report
         run: |
           echo "Generating PDF report..."
