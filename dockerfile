@@ -9,6 +9,9 @@ COPY requirements.txt .
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install Docker if necessary (without sudo)
+RUN apt-get update && apt-get install -y docker.io
+
 # Copy source code
 COPY . .
 
