@@ -51,7 +51,7 @@ jobs:
           echo "SonarQube IP Address: $SONARQUBE_IP"
 
           docker run --rm --network host \
-            -e SONAR_HOST_URL="http://$SONARQUBE_IP:9000" \
+            -e SONAR_HOST_URL="http://localhost:9000" \
             -e SONAR_TOKEN=$SONAR_TOKEN \
             -v $(pwd):/usr/src \
             sonarsource/sonar-scanner-cli
