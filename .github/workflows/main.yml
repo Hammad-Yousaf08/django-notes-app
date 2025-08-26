@@ -46,7 +46,7 @@ jobs:
       # SonarQube scan
       - name: SonarQube Scan
 
-          docker run --rm --network host \
+          docker run --rm --network container:sonar \
             -e SONAR_HOST_URL="http://172.17.0.2:9000" \
             -e SONAR_TOKEN=$SONAR_TOKEN \
             -e SONAR_WP_TIMEOUT="600" \
