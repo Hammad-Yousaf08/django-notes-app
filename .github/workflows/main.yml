@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Debug step to confirm the presence of pom.xml
+      # Debug step to confirm the presence of pom.xm
       - name: Check directory structure
         run: |
           echo "Current directory:"
